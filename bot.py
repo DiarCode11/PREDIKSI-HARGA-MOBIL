@@ -14,6 +14,9 @@ class TeleBot:
         self.bot: Bot = Bot(token)
         self.handlers: Dict[str, function] = {}
         self.all_prediksi: Dict[int, PrediksiHarga] = {}
+        
+        # Load model once when the bot is initialized
+        PrediksiHarga.load_model()
 
     def handle_message(self, msg: Dict) -> None:
         """
@@ -21,7 +24,7 @@ class TeleBot:
         """
         chat_id = msg['chat']['id']
         username = msg['from']['username']
-        if (msg['text'] == '/mulai') or (msg['text'] == '/mulai@Teamtwo_bot'):
+        if (msg['text'] == '/mulai') or (msg['text'] == '/start') or (msg['text'] == '/mulai@car_predict_bot'):
             buttons = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_merk[i:i+2]]
                 for i in range(0, len(list_of_merk), 2)
@@ -29,6 +32,7 @@ class TeleBot:
 
             self.bot.sendMessage(chat_id, 'Selamat datang di Bot Prediksi Harga Mobil...\n\nSilakan pilih merk:', reply_markup=buttons)
             return
+        
         print(username)
         # if the first letter is a number
         if msg['text'][0].isdigit():
@@ -64,8 +68,6 @@ class TeleBot:
             self.all_prediksi[message_id].delete()
             del self.all_prediksi[message_id]
         
-                    
-    
     def add_new_prediction(self, prediksi: PrediksiHarga) -> None:
         """
         Menambahkan objek prediksi ke dictionary

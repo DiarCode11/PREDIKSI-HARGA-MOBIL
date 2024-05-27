@@ -2,6 +2,14 @@ import os
 import pickle
 
 class PrediksiHarga:
+    model = None
+
+    @classmethod
+    def load_model(cls):
+        if cls.model is None:
+            with open('car_price_model.pkl', 'rb') as f:
+                cls.model = pickle.load(f)
+
     def __init__(self, message_id: int, user_id: int):
         self.merk: str | None = None
         self.year: int | None = None
@@ -12,6 +20,7 @@ class PrediksiHarga:
         self.owner: str | None = None
         self.message_id = message_id
         self.user_id = user_id
+        self.load_model()
         
     def save(self):
         # create folder
@@ -50,7 +59,12 @@ class PrediksiHarga:
         self.owner = owner
     
     def prediksi_harga(self):
-        print(self.merk, self.year, self.km_driven, self.fuel, self.seller_type, self.transmission, self.owner)
-        return 999999999 # TODO
-    
-    
+        features = [self.merk, self.year, self.km_driven, self.fuel, self.seller_type, self.transmission, self.owner]
+        # Preprocess features if necessary
+        # Example: features = preprocess(features)
+
+        if None in features:
+            raise ValueError("All features must be set before making a prediction.")
+        
+        prediction = self.model.predict([features])
+        return prediction[0]
