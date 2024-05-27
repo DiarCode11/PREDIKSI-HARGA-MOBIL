@@ -108,10 +108,6 @@ def set_fuel(fuel : str):
     return fuel_dict
     
 def predict(merk : str, year : int, km_driven : int, fuel : str, seller_type : str, transmission : str, owner : str): 
-    # Load model
-    model = joblib.load('random_forest_model.pkl')
-    # Load Scaler
-    scaler = joblib.load('scaler.pkl')
 
     seller_type = encode_seller_type(seller_type)
     transmission = encode_transmission(transmission)
@@ -159,6 +155,11 @@ def predict(merk : str, year : int, km_driven : int, fuel : str, seller_type : s
         'fuel_Petrol': [fuel['Petrol']],
     })
     
+    # Load model
+    model = joblib.load('random_forest_model.pkl')
+    # Load Scaler
+    scaler = joblib.load('scaler.pkl')
+    
     # Normalisasi fitur
     data_normalized = scaler.transform(new_data)
 
@@ -167,6 +168,7 @@ def predict(merk : str, year : int, km_driven : int, fuel : str, seller_type : s
     
     return prediction
     
-predict("Maruti", 2010, 80000, "Petrol", "Individual", "Manual", "First Owner")
-    
+nilai = predict("BMW", 2010, 8000, "Petrol", "Individual", "Manual", "Second Owner")
+
+print(nilai)
 
