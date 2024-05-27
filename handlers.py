@@ -51,7 +51,10 @@ def seller_type_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_i
     msg_id = (chat_id, message_id)
 
     buttons = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_seller_type]
+        [
+            [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_seller_type[:2]],
+            [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_seller_type[2:]]
+        ]
     ])
     
     teleBot.bot.editMessageText(msg_id, 'Silahkan pilih jenis seller:')
@@ -95,7 +98,10 @@ def owner_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int
     msg_id = (chat_id, message_id)
 
     buttons = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_owner]
+        [
+            [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_owner[:len(list_of_owner)//2]],
+            [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_owner[len(list_of_owner)//2:]],
+        ]
     ])
     
     teleBot.bot.editMessageText(msg_id, 'Silahkan pilih owner:')
@@ -106,7 +112,6 @@ def owner_buttons_handler(owner: str):
         teleBot.bot.answerCallbackQuery(query_id, text=f'Owner yang dipilih: {owner}')
         prediksi: PrediksiHarga = PrediksiHarga.load(message_id)
         prediksi.set_owner(owner)
-        print(prediksi)
         prediksi.save()
         teleBot.bot.sendMessage(chat_id, "Berapa tuh harganya?")
     return handler
