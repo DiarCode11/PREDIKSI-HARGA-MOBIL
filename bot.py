@@ -11,9 +11,7 @@ class TeleBot:
         Inisialisasi bot dengan token dan memberikan default value untuk status lampu dan permainan Tic Tac Toe
         """
         self.bot: Bot = Bot(token)
-        self.lamp_status: str = "Off"
         self.handlers: Dict[str, function] = {}
-        self.distance: int = None
 
     def handle_message(self, msg: Dict) -> None:
         """
