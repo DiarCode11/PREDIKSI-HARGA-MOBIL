@@ -2,7 +2,7 @@ import os
 import pickle
 
 class PrediksiHarga:
-    def __init__(self, message_id: int):
+    def __init__(self, message_id: int, user_id: int):
         self.merk: str = None
         self.year: int = None
         self.km_driven: int = None
@@ -11,6 +11,7 @@ class PrediksiHarga:
         self.transmission: str = None
         self.owner: str = None
         self.message_id = message_id
+        self.user_id = user_id
         
     def save(self):
         # create folder

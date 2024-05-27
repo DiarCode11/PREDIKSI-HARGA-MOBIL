@@ -18,7 +18,7 @@ def buttons_merk(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int,
 def buttons_merk_handler(merk: str):
     def handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type:str):
         teleBot.bot.answerCallbackQuery(query_id, text=f'Merk yang dipilih: {merk}')
-        prediksi = PrediksiHarga(message_id)
+        prediksi = PrediksiHarga(message_id, user_id)
         prediksi.set_merk(merk)
         prediksi.save()
         fuel_buttons(teleBot, query_id, chat_id, message_id, user_id, chat_type)
@@ -38,8 +38,10 @@ def fuel_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int,
 
 def fuel_buttons_handler(fuel: str):
     def handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type:str):
-        teleBot.bot.answerCallbackQuery(query_id, text=f'Bahan bakar yang dipilih: {fuel}')
         prediksi: PrediksiHarga = PrediksiHarga.load(message_id)
+        if prediksi.user_id != user_id:
+            return
+        teleBot.bot.answerCallbackQuery(query_id, text=f'Bahan bakar yang dipilih: {fuel}')
         prediksi.set_fuel(fuel)
         prediksi.save()
         seller_type_buttons(teleBot, query_id, chat_id, message_id, user_id, chat_type)
@@ -62,8 +64,10 @@ def seller_type_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_i
     
 def seller_type_buttons_handler(seller_type: str):
     def handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type:str):
-        teleBot.bot.answerCallbackQuery(query_id, text=f'Seller yang dipilih: {seller_type}')
         prediksi: PrediksiHarga = PrediksiHarga.load(message_id)
+        if prediksi.user_id != user_id:
+            return
+        teleBot.bot.answerCallbackQuery(query_id, text=f'Seller yang dipilih: {seller_type}')
         prediksi.set_seller_type(seller_type)
         prediksi.save()
         transmission_buttons(teleBot, query_id, chat_id, message_id, user_id, chat_type)
@@ -84,8 +88,10 @@ def transmission_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_
 
 def transmission_buttons_handler(transmission: str):
     def handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type:str):
-        teleBot.bot.answerCallbackQuery(query_id, text=f'Transmisi yang dipilih: {transmission}')
         prediksi: PrediksiHarga = PrediksiHarga.load(message_id)
+        if prediksi.user_id != user_id:
+            return
+        teleBot.bot.answerCallbackQuery(query_id, text=f'Transmisi yang dipilih: {transmission}')
         prediksi.set_transmission(transmission)
         prediksi.save()
         owner_buttons(teleBot, query_id, chat_id, message_id, user_id, chat_type)
@@ -109,8 +115,10 @@ def owner_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int
     
 def owner_buttons_handler(owner: str):
     def handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type:str):
-        teleBot.bot.answerCallbackQuery(query_id, text=f'Owner yang dipilih: {owner}')
         prediksi: PrediksiHarga = PrediksiHarga.load(message_id)
+        if prediksi.user_id != user_id:
+            return
+        teleBot.bot.answerCallbackQuery(query_id, text=f'Owner yang dipilih: {owner}')
         prediksi.set_owner(owner)
         prediksi.save()
         teleBot.bot.sendMessage(chat_id, "Berapa tuh harganya?")
