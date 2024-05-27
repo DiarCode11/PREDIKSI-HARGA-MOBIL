@@ -1,1 +1,4 @@
 *.pkl
+.env
+saved_objects/
+__pycache__/
