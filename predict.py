@@ -178,5 +178,5 @@ list_of_owner = ['First Owner', 'Second Owner', 'Third Owner', 'Fourth & Above O
 
 if __name__ == "__main__":
     predict("Maruti", 2010, 80000, "Petrol", "Individual", "Manual", "First Owner")
-    
+
 
