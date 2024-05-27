@@ -4,6 +4,7 @@ from telepot.loop import MessageLoop
 from typing import Dict
 from telepot import Bot
 from predict import list_of_merk
+from prediksi_obj import PrediksiHarga
 
 class TeleBot:
     def __init__(self, token: str) -> None:
@@ -12,12 +13,14 @@ class TeleBot:
         """
         self.bot: Bot = Bot(token)
         self.handlers: Dict[str, function] = {}
+        self.all_prediksi: Dict[int, PrediksiHarga] = {}
 
     def handle_message(self, msg: Dict) -> None:
         """
         Menangani pesan pada bot telegram
         """
         chat_id = msg['chat']['id']
+        username = msg['from']['username']
         if (msg['text'] == '/mulai') or (msg['text'] == '/mulai@Teamtwo_bot'):
             buttons = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_merk[i:i+2]]
@@ -25,7 +28,63 @@ class TeleBot:
             ])
 
             self.bot.sendMessage(chat_id, 'Selamat datang di Bot Prediksi Harga Mobil...\n\nSilakan pilih merk:', reply_markup=buttons)
-            
+            return
+        print(username)
+        # if the first letter is a number
+        if msg['text'][0].isdigit():
+            finished, prediksi = self.handle_input_text(msg['text'], user_id=username)
+            print(finished, prediksi)
+            if not finished and prediksi is not None:
+                self.bot.sendMessage(chat_id, "Baik, silahkan masukan km perjalanan (cth: 100000)")
+            elif finished and prediksi is not None:
+                harga = prediksi.prediksi_harga()
+                self.delete_prediction(prediksi.message_id)
+                self.bot.sendMessage(chat_id, "Prediksi harga: " + str(harga))
+            return
+    
+    def handle_input_text(self, text: str, user_id: int):
+        """
+        Mencari prediksi yang belum diinputkan oleh user
+        """
+        for message_id, prediksi in self.all_prediksi.items():
+            if prediksi.user_id == user_id:
+                if prediksi.year is None:
+                    prediksi.set_year(text)
+                    return (False, prediksi)
+                elif prediksi.km_driven is None:
+                    prediksi.set_km_driven(text)
+                    return (True, prediksi)
+        return (False, None)
+    
+    def delete_prediction(self, message_id: int) -> None:
+        """
+        Menghapus objek prediksi berdasarkan message_id
+        """
+        if message_id in self.all_prediksi:
+            self.all_prediksi[message_id].delete()
+            del self.all_prediksi[message_id]
+        
+                    
+    
+    def add_new_prediction(self, prediksi: PrediksiHarga) -> None:
+        """
+        Menambahkan objek prediksi ke dictionary
+        """
+        prediksi.save()
+        self.all_prediksi[prediksi.message_id] = prediksi
+        
+    def get_prediction(self, message_id: int) -> PrediksiHarga:
+        """
+        Mengembalikan objek prediksi berdasarkan message_id
+        """
+        if message_id not in self.all_prediksi:
+            prediction = PrediksiHarga.load(message_id)
+            if prediction is not None:
+                self.add_new_prediction(prediction)
+                return prediction
+            return None
+        return self.all_prediksi[message_id]
+    
     def run(self) -> None:
         """
         Menjalankan bot dan menangani pesan dengan menggunakan `MessageLoop`
