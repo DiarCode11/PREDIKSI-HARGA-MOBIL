@@ -1,5 +1,6 @@
 import os
 import pickle
+from sklearn.ensemble import RandomForestRegressor  # Pastikan model Anda sesuai dengan ini
 
 class PrediksiHarga:
     model = None
@@ -66,5 +67,6 @@ class PrediksiHarga:
         if None in features:
             raise ValueError("All features must be set before making a prediction.")
         
+        # Ensure that the features are in the correct format for your model
         prediction = self.model.predict([features])
         return prediction[0]
