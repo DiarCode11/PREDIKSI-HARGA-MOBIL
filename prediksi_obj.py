@@ -1,5 +1,6 @@
 import os
 import pickle
+from predict import predict
 
 class PrediksiHarga:
     def __init__(self, message_id: int, user_id: int):
@@ -50,7 +51,6 @@ class PrediksiHarga:
         self.owner = owner
     
     def prediksi_harga(self):
-        print(self.merk, self.year, self.km_driven, self.fuel, self.seller_type, self.transmission, self.owner)
-        return 999999999 # TODO
-    
-    
+        prediksi = predict(self.merk, self.year, self.km_driven, self.fuel, self.seller_type, self.transmission, self.owner)
+        # print(self.merk, self.year, self.km_driven, self.fuel, self.seller_type, self.transmission, self.owner)
+        return 'Rp. {:,.2f}'.format(round(prediksi[0] * 15000))

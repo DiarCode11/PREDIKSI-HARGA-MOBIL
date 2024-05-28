@@ -21,25 +21,26 @@ class TeleBot:
         """
         chat_id = msg['chat']['id']
         username = msg['from']['username']
-        if (msg['text'] == '/mulai') or (msg['text'] == '/mulai@Teamtwo_bot'):
+        if (msg['text'] == '/start') or (msg['text'] == '/start@Teamtwo_bot'):
+            self.bot.sendMessage(chat_id, "<strong>Selamat datang di Bot Prediksi Harga Mobil</strong>\n\nUntuk menggunakan chatbot ini sangatlah mudah. Kamu hanya perlu menginputkan atribut-atribut dari mobil seperti merk, tahun pembuatan, dan lain sebagainya. Untuk memulai layanan bot kamu bisa klik /mulai 😊", parse_mode="HTML")
+        elif (msg['text'] == '/mulai') or (msg['text'] == '/mulai@Teamtwo_bot'):
             buttons = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_merk[i:i+2]]
                 for i in range(0, len(list_of_merk), 2)
             ])
 
-            self.bot.sendMessage(chat_id, 'Selamat datang di Bot Prediksi Harga Mobil...\n\nSilakan pilih merk:', reply_markup=buttons)
+            self.bot.sendMessage(chat_id, 'Silakan pilih merk:', reply_markup=buttons)
             return
-        print(username)
+
         # if the first letter is a number
         if msg['text'][0].isdigit():
             finished, prediksi = self.handle_input_text(msg['text'], user_id=username)
-            print(finished, prediksi)
             if not finished and prediksi is not None:
                 self.bot.sendMessage(chat_id, "Baik, silahkan masukan km perjalanan (cth: 100000)")
             elif finished and prediksi is not None:
                 harga = prediksi.prediksi_harga()
                 self.delete_prediction(prediksi.message_id)
-                self.bot.sendMessage(chat_id, "Prediksi harga: " + str(harga))
+                self.bot.sendMessage(chat_id, f"Detail Prediksi\n\nMerk: {prediksi.merk}\nTahun: {prediksi.year}\nKM perjalanan: {prediksi.km_driven} km\nBahan bakar: {prediksi.fuel}\nTipe seller: {prediksi.seller_type}\nTransmisi: {prediksi.transmission}\nOwner: {prediksi.owner}" + "\n\nPrediksi harga: " + str(harga))
             return
     
     def handle_input_text(self, text: str, user_id: int):
