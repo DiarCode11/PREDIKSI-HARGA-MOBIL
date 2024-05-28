@@ -22,7 +22,12 @@ class TeleBot:
         chat_id = msg['chat']['id']
         username = msg['from']['username']
         if (msg['text'] == '/start') or (msg['text'] == '/start@Teamtwo_bot'):
-            self.bot.sendMessage(chat_id, "<strong>Selamat datang di Bot Prediksi Harga Mobil</strong>\n\nUntuk menggunakan chatbot ini sangatlah mudah. Kamu hanya perlu menginputkan atribut-atribut dari mobil seperti merk, tahun pembuatan, dan lain sebagainya. Untuk memulai layanan bot kamu bisa klik /mulai 😊", parse_mode="HTML")
+            self.bot.sendMessage(chat_id, "<strong>Selamat datang di Bot Prediksi Harga Mobil</strong>\n\nUntuk menggunakan chatbot ini sangatlah mudah. Kamu hanya perlu menginputkan atribut-atribut dari mobil seperti merk, tahun pembuatan, dan lain sebagainya. Untuk memulai layanan bot kamu bisa klik /mulai atau jika masih belum mengerti bisa mengklik /help", parse_mode="HTML")
+            
+        elif msg['text'] == '/help': 
+            message = "<strong>Berikut adalah langkah-langkah menggunakan bot</strong>\n\n 1. Ketik /mulai untuk memulai bot.\n 2. Pilih merk mobil yang ingin di prediksi.\n 3. Inputkan atribut-atribut dari mobil yang ingin di prediksi seperti merk, jenis bahan bakar, tahun pembuatan, dan lain sebagainya.\n 4. Setelah semua atribut diinputkan, hasil prediksi akan muncul di chatbot secara otomatis dengan harga yang di prediksi serta detail atribut.\n\nSelengkapnya kamu bisa akses melalui link berikut https://github.com/DiarCode11/PREDIKSI-HARGA-MOBIL.git"
+            
+            self.bot.sendMessage(chat_id, message, parse_mode="HTML")
         elif (msg['text'] == '/mulai') or (msg['text'] == '/mulai@Teamtwo_bot'):
             buttons = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text=x, callback_data=x.lower()) for x in list_of_merk[i:i+2]]
