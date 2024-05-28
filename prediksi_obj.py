@@ -53,4 +53,4 @@ class PrediksiHarga:
     def prediksi_harga(self):
         prediksi = predict(self.merk, self.year, self.km_driven, self.fuel, self.seller_type, self.transmission, self.owner)
         # print(self.merk, self.year, self.km_driven, self.fuel, self.seller_type, self.transmission, self.owner)
-        return 'Rp. {:,.2f}'.format(round(prediksi[0] * 15000))
+        return 'Rp. {:,.2f}'.format(round(prediksi[0] * 1500))
